@@ -3,7 +3,7 @@ import random
 import time
 from abc import ABC, abstractmethod
 from typing import Dict, Iterator, List, Optional, Union
-from schema import Message
+from schema import ASSISTANT, Message
 """
 message
 [{"role", "content", "name", "function_call"}]
@@ -44,3 +44,6 @@ class BaseChat(BaseLLM):
         delta_stream: bool = False,
     ) -> Iterator[List[Message]]:
         raise NotImplementedError
+
+
+
