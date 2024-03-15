@@ -12,7 +12,7 @@ else:
     from openai import OpenAIError
 
 from autoalpha.oai.base import BaseChat
-from schema import ASSISTANT, Message
+from autoalpha.oai.schema import ASSISTANT, Message
 
 OAI_PRICE1K = {
     "text-ada-001": 0.0004,

@@ -3,7 +3,7 @@ import random
 import time
 from abc import ABC, abstractmethod
 from typing import Dict, Iterator, List, Optional, Union
-from schema import ASSISTANT, Message
+from .schema import ASSISTANT, Message
 """
 message
 [{"role", "content", "name", "function_call"}]
@@ -21,23 +21,25 @@ class BaseChat(BaseLLM):
         self.max_retries = generate_cfg.pop('max_retries', 0)
         self.generate_cfg = generate_cfg
 
-    def _preprocess_data(self, messages):
+    def _preprocess_data(self, messages: List[Union[Message, Dict]]):
         return messages
 
     def chat(self,
         messages: List[Union[Message, Dict]],
-        functions: Optional[List[Dict]] = None) -> str:
+        functions: Optional[List[Dict]] = None,
+        stream: bool = True) -> str:
 
         messages = self._preprocess_data(messages)
         if functions:
             fncall_mode = True
         else:
             fncall_mode = False
+        return self._chat(messages, fncall_mode)
 
-    def _chat(self, message):
-        return self._chat_stream(message)
+    def _chat(self, messages: List[Message], 
+              fncall_mode: bool = False):
+        return self._chat_no_stream(messages)
 
-    @abstractmethod
     def _chat_stream(
         self,
         messages: List[Message],
@@ -46,4 +48,9 @@ class BaseChat(BaseLLM):
         raise NotImplementedError
 
 
-
+    def _chat_no_stream(
+        self,
+        messages: List[Message],
+        delta_stream: bool = False,
+    ) -> Iterator[List[Message]]:
+        raise NotImplementedError
