@@ -1,7 +1,6 @@
 import copy
 from typing import Dict, Iterator, List, Optional, Union
 
-from autoalpha.agent.agent_base import Agent
 from autoalpha.oai.base import BaseChat
 from autoalpha.agent.manager_agent import AgentManager
 

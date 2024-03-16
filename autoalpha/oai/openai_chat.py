@@ -13,6 +13,7 @@ else:
 
 from autoalpha.oai.base import BaseChat
 from autoalpha.oai.schema import ASSISTANT, Message
+from autoalpha.oai.function_chat import BaseFnChat
 
 OAI_PRICE1K = {
     "text-ada-001": 0.0004,
@@ -46,7 +47,7 @@ OAI_PRICE1K = {
 
 
 
-class OpenaiChat(BaseChat):
+class OpenaiChat(BaseFnChat):
 
     def __init__(self, cfg: Optional[Dict] = None):
         super().__init__(cfg)

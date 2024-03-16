@@ -4,13 +4,13 @@ from typing import Dict, Iterator, List, Optional, Tuple, Union, Protocol
 
 class Agent(Protocol):
 
-    @property
-    def name(self):
-        pass
+    # @property
+    # def name(self):
+    #     pass
     
-    @property
-    def description(self,):
-        pass
+    # @property
+    # def description(self,):
+    #     pass
 
     def run(self, ):
         pass

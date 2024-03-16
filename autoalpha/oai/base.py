@@ -34,11 +34,18 @@ class BaseChat(BaseLLM):
             fncall_mode = True
         else:
             fncall_mode = False
-        return self._chat(messages, fncall_mode)
+        if fncall_mode:
+            return self._chat_with_functions(
+                messages=messages,
+                functions=functions
+            )
+        return self._chat(messages, functions, fncall_mode)
 
-    def _chat(self, messages: List[Message], 
+    def _chat(self, messages: List[Message],
+              functions: Optional[List[Dict]] = None, 
               fncall_mode: bool = False):
         return self._chat_no_stream(messages)
+    
 
     def _chat_stream(
         self,
@@ -53,4 +60,14 @@ class BaseChat(BaseLLM):
         messages: List[Message],
         delta_stream: bool = False,
     ) -> Iterator[List[Message]]:
+        raise NotImplementedError
+
+
+    def _chat_with_functions(
+        self,
+        messages: List[Union[Message, Dict]],
+        functions: List[Dict],
+        stream: bool = True,
+        delta_stream: bool = False
+    ) -> Union[List[Message], Iterator[List[Message]]]:
         raise NotImplementedError
