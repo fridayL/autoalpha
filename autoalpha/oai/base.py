@@ -24,6 +24,9 @@ class BaseChat(BaseLLM):
     def _preprocess_data(self, messages: List[Union[Message, Dict]]):
         return messages
 
+    def _postprocess_data(self, messages: List[Union[Message, Dict]]):
+        return messages
+
     def chat(self,
         messages: List[Union[Message, Dict]],
         functions: Optional[List[Dict]] = None,
@@ -35,10 +38,14 @@ class BaseChat(BaseLLM):
         else:
             fncall_mode = False
         if fncall_mode:
-            return self._chat_with_functions(
+            output = self._chat_with_functions(
                 messages=messages,
                 functions=functions
             )
+            if isinstance(output, list):
+                output = self._postprocess_data(output,
+                                                fncall_mode=fncall_mode)
+                return output
         return self._chat(messages, functions, fncall_mode)
 
     def _chat(self, messages: List[Message],

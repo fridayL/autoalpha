@@ -1,11 +1,12 @@
-
+import re
+import json
 import copy
 from abc import ABC
 from typing import Dict, Iterator, List, Optional, Union
 
 
 from autoalpha.oai.base import BaseChat
-from autoalpha.oai.schema import ASSISTANT,SYSTEM, Message
+from autoalpha.oai.schema import ASSISTANT,SYSTEM, Message, FunctionCall
 from autoalpha.utils.util import get_function_description
 
 
@@ -61,3 +62,22 @@ class BaseFnChat(BaseChat, ABC):
         messages = super()._preprocess_data(messages)
         messages = self._preprocess_fncall_messages(messages)
         return messages
+    
+    def  _postprocess_data(self, messages: List[Message]) -> List[Message]:
+        messages = self._postprocess_fncall_messages(messages)
+        return messages
+    
+    def _postprocess_fncall_messages(self, messages: List[Message]) -> List[Message]:
+        new_messages = []
+        for msg in messages:
+            if re.find("function_name", msg.content) and re.find("```json", msg.content):
+                cleaned_string = re.sub(r"""```.*?\n""", '', msg.content)
+                parsed_json = json.loads(cleaned_string)
+                new_messages.append(Message(msg.role,
+                                            content=[], 
+                                            function_call=FunctionCall(name=parsed_json["function_name"], arguments=parsed_json["parameters"])
+                                            ))
+
+            else:
+                new_messages.append(msg)
+        return new_messages

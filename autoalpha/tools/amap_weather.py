@@ -17,8 +17,8 @@ class AmapWeather(ToolsBase):
         'required': True
     }]
 
-    def __init__(self, cfg: Optional[Dict] = None):
-        super().__init__(cfg)
+    def __init__(self, config: Optional[Dict] = None):
+        super().__init__(config)
 
         # remote call
         self.url = 'https://restapi.amap.com/v3/weather/weatherInfo?city={city}&key={key}'
@@ -26,7 +26,7 @@ class AmapWeather(ToolsBase):
             'https://modelscope.oss-cn-beijing.aliyuncs.com/resource/agent/AMap_adcode_citycode.xlsx'
         )
 
-        self.token = self.cfg.get('token', os.environ.get('AMAP_TOKEN', ''))
+        self.token = self.config.get('token', os.environ.get('AMAP_TOKEN', ''))
         # assert self.token != '', 'weather api token must be acquired through ' \
         #     'https://lbs.amap.com/api/webservice/guide/create-project/get-key and set by AMAP_TOKEN'
 

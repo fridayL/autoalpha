@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -46,7 +46,7 @@ class BaseModelCompatibleDict(BaseModel):
 
 class FunctionCall(BaseModelCompatibleDict):
     name: str
-    arguments: str
+    arguments: Union[str, List[Dict]]
 
     def __init__(self, name: str, arguments: str):
         super().__init__(name=name, arguments=arguments)

@@ -29,12 +29,12 @@ class ToolsBase(ABC):
     description: str = ''
     parameters: List[Dict] = []
 
-    def __init__(self, cfg: Optional[Dict] = None):
-        self.cfg = cfg or {}
+    def __init__(self, config: Optional[Dict] = None):
+        self.config = config or {}
 
-        self.name_for_human = self.cfg.get('name_for_human', self.name)
+        self.name_for_human = self.config.get('name_for_human', self.name)
         if not hasattr(self, 'args_format'):
-            self.args_format = self.cfg.get('args_format', 'json need provide')
+            self.args_format = self.config.get('args_format', 'json need provide')
         self.function = self._build_function()
 
     @abstractmethod
