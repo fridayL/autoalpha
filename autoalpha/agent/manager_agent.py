@@ -48,10 +48,7 @@ class AgentManager(Agent):
                 trans_object.append(Message(**msg))
             else:
                 trans_object.append(msg)
-
-
-
-        for rsp in self._run(messages=trans_object, ):
+        for rsp in self._run(messages=trans_object):
             yield rsp
 
     def _run(self, messages:List[Message]) -> Iterator[List[Message]]:
@@ -93,6 +90,10 @@ class AgentManager(Agent):
             yield output
         output = outputs[-1]
         use_tool, action, action_input = self._parse_output(output)
+        if use_tool:
+            tools_results = self._call_tool(action, action_input)
+            for tool_output in tools_results:
+                yield tool_output
 
     def _call_tool(self,
                    tool_name: str,
@@ -127,7 +128,10 @@ class AgentManager(Agent):
     def _parse_output(self, message: Message) -> Tuple[bool, str, str, str]:
         if message.function_call:
             use_tool = message.function_call
-            tool_name = 
+            tool_name = message.function_call.name
+            tool_args = message.function_call.arguments
+            return use_tool, tool_name, tool_args
+        return False, '', ''
     
 
 

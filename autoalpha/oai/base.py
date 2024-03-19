@@ -43,8 +43,7 @@ class BaseChat(BaseLLM):
                 functions=functions
             )
             if isinstance(output, list):
-                output = self._postprocess_data(output,
-                                                fncall_mode=fncall_mode)
+                output = self._postprocess_data(output)
                 return output
         return self._chat(messages, functions, fncall_mode)
 

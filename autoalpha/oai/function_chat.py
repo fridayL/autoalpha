@@ -70,8 +70,9 @@ class BaseFnChat(BaseChat, ABC):
     def _postprocess_fncall_messages(self, messages: List[Message]) -> List[Message]:
         new_messages = []
         for msg in messages:
-            if re.find("function_name", msg.content) and re.find("```json", msg.content):
+            if re.findall("function_name", msg.content) and re.findall("```json", msg.content):
                 cleaned_string = re.sub(r"""```.*?\n""", '', msg.content)
+                cleaned_string = re.sub(r"""```""", '', cleaned_string).strip()
                 parsed_json = json.loads(cleaned_string)
                 new_messages.append(Message(msg.role,
                                             content=[], 

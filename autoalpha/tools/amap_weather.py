@@ -1,9 +1,11 @@
 import os
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import pandas as pd
 import requests
 
+
+from autoalpha.oai.schema import ASSISTANT, Message
 from autoalpha.tools.tools_base import ToolsBase, register_tool
 
 
@@ -14,6 +16,7 @@ class AmapWeather(ToolsBase):
         'name': 'location',
         'type': 'string',
         'description': 'get temperature for a specific location',
+        'value': 'need location value',
         'required': True
     }]
 
@@ -26,7 +29,8 @@ class AmapWeather(ToolsBase):
             'https://modelscope.oss-cn-beijing.aliyuncs.com/resource/agent/AMap_adcode_citycode.xlsx'
         )
 
-        self.token = self.config.get('token', os.environ.get('AMAP_TOKEN', ''))
+        self.token = "009f85dce4fab4e05315be301eaeb5ce"
+        #self.config.get('token', os.environ.get('AMAP_TOKEN', ''))
         # assert self.token != '', 'weather api token must be acquired through ' \
         #     'https://lbs.amap.com/api/webservice/guide/create-project/get-key and set by AMAP_TOKEN'
 
@@ -39,9 +43,9 @@ class AmapWeather(ToolsBase):
         else:
             return filtered_df['adcode'].values[0]
 
-    def call(self, params: Union[str, dict], **kwargs) -> str:
+    def call(self, params: Union[str, dict, List[Dict]], **kwargs) -> str:
 
-        location = params['location']
+        location = params[0]['value']
         response = requests.get(
             self.url.format(city=self.get_city_adcode(location),
                             key=self.token))
@@ -51,4 +55,4 @@ class AmapWeather(ToolsBase):
         else:
             weather = data['lives'][0]['weather']
             temperature = data['lives'][0]['temperature']
-            return f'{location}的天气是{weather}温度是{temperature}度。'
+            return [Message(ASSISTANT, f'{location}的天气是{weather}温度是{temperature}度。')]
