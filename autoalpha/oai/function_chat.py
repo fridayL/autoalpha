@@ -12,7 +12,6 @@ from autoalpha.utils.util import get_function_description
 
 FN_CALL_TEMPLATE = """
 # 工具调用
-
 ## 你拥有如下工具可以调用：
 {tool_descs}
 如果需要调用工具,名称必须是[{tool_names}]之一。
