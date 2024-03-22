@@ -32,6 +32,7 @@ class AgentManager(Agent):
         self.name = name
         self.description = description
         self.system_message = system_message
+        print(llm)
         if isinstance(llm, dict):
             self.llm = OpenaiChat(llm)
         self.function_map = {}
@@ -82,7 +83,7 @@ class AgentManager(Agent):
                                        content=self.system_message))
         elif isinstance(messages[0][CONTENT], str):
             messages[0][CONTENT] = self.system_message + messages[0][CONTENT]
-            
+        print("messages", messages)    
         outputs = self.llm.chat(messages=messages,
                              functions=functions,
                              stream=stream)

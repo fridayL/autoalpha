@@ -15,7 +15,8 @@ class AssistantAgent(AgentManager):
                  llm: Optional[Union[Dict, BaseChat]] = None,
                  system_message: Optional[str] = DEFAULT_SYSTEM_MESSAGE,
                  name: Optional[str] = None,
-                 description: Optional[str] = None):
+                 description: Optional[str] = None
+                 ):
         super().__init__(
             function_list=function_list,
             llm=llm,
