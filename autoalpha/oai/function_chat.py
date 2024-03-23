@@ -21,6 +21,8 @@ json```
 ```
 """
 
+PATTERN_JSON = r'```json(.*?)```'
+
 
 class BaseFnChat(BaseChat, ABC):
 
@@ -70,8 +72,11 @@ class BaseFnChat(BaseChat, ABC):
         new_messages = []
         for msg in messages:
             if re.findall("function_name", msg.content) and re.findall("```json", msg.content):
-                cleaned_string = re.sub(r"""```.*?\n""", '', msg.content)
-                cleaned_string = re.sub(r"""```""", '', cleaned_string).strip()
+                matches = re.findall(PATTERN_JSON, msg.content, re.DOTALL)
+                cleaned_string = ''
+                for match in matches:
+                    cleaned_string = match
+                    break
                 parsed_json = json.loads(cleaned_string)
                 new_messages.append(Message(msg.role,
                                             content=[], 

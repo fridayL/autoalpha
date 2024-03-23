@@ -46,6 +46,8 @@ class AmapWeather(ToolsBase):
     def call(self, params: Union[str, dict, List[Dict]], **kwargs) -> str:
 
         location = params[0]['value']
+        if "市"not in location:
+            location = location + "市"
         response = requests.get(
             self.url.format(city=self.get_city_adcode(location),
                             key=self.token))

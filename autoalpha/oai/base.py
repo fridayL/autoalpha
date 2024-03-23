@@ -38,14 +38,15 @@ class BaseChat(BaseLLM):
         else:
             fncall_mode = False
         if fncall_mode:
-            output = self._chat_with_functions(
+            outputs = self._chat_with_functions(
                 messages=messages,
                 functions=functions
             )
-            if isinstance(output, list):
-                output = self._postprocess_data(output)
-                return output
-        return self._chat(messages, functions, fncall_mode)
+            if isinstance(outputs, list):
+                outputs = self._postprocess_data(outputs)
+                return outputs
+        else:
+            return self._chat(messages, functions, fncall_mode)
 
     def _chat(self, messages: List[Message],
               functions: Optional[List[Dict]] = None, 
