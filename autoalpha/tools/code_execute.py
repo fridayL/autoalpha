@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union, Tuple
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
+from autoalpha.oai.schema import ASSISTANT, Message
 from autoalpha.tools.tools_base import ToolsBase, register_tool
 
 
@@ -170,11 +171,11 @@ def extract_code(text):
 
 @register_tool("code_interpreter")
 class CodeInterpreter(ToolsBase):
-    description = "python 代码执行器，可以用于执行任意python代码"
+    description = "python代码执行器，可以用于执行任意python代码"
     parameters = [{
         'name': 'code',
         'type': 'string',
-        'description': '可以执行的代码',
+        'description': '可以执行的python代码片段',
         'required': True
     }]
 
@@ -189,8 +190,7 @@ class CodeInterpreter(ToolsBase):
              timeout: Optional[int] = 30,
              **kwargs) -> str:
         try:
-            params = json.loads(params)
-            code = params['code']
+            code = params[0]['value']
         except Exception:
             code = extract_code(params)
 
@@ -204,7 +204,7 @@ class CodeInterpreter(ToolsBase):
         #             save_url_to_local_work_dir(file, WORK_DIR)
         #         except Exception:
         #             traceback.format_exception(*sys.exc_info())
-        fixed_code += code + '\n\n'  # Prevent code not executing in notebook due to no line breaks at the end
-        result = execute_code(fixed_code)
-
-        return result if result.strip() else 'Finished execution.'
+        fixed_code = code + '\n\n'  # Prevent code not executing in notebook due to no line breaks at the end
+        result_state, result, _ = execute_code(fixed_code)
+        print(result)
+        return [Message(ASSISTANT, result)]

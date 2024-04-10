@@ -5,3 +5,6 @@
 #### 项目运行
 还在debug中具体运行case请详见根目录下的notebook文件
 #### 支持功能
+
+#### 友情链接
+[我的blog](https://www.fridayl.com/)

@@ -15,10 +15,18 @@ FN_CALL_TEMPLATE = """
 ## 你拥有如下工具可以调用：
 {tool_descs}
 如果需要调用工具,名称必须是[{tool_names}]之一。
-并且输出的结果必须是以下格式,并解析工具对应的参数
+如果需要调用python解析器工具时parameters里面必须有有效的代码片段
+并且输出的结果必须是以下格式其中一个
+第一种：
 json```
 {{"function_name": "", "parameters": []\}}
 ```
+需要调用的function_name，api tool名称
+第二种：
+json```
+{{"function_name": "code_interpreter", "parameters": []\}}
+```
+如果你觉得需要生成代码才能回复问题，必须调用code_interpreter工具， parameters中的字段必须是可以执行的代码片段而不是任何参数
 """
 
 PATTERN_JSON = r'```json(.*?)```'
@@ -72,6 +80,7 @@ class BaseFnChat(BaseChat, ABC):
         new_messages = []
         for msg in messages:
             if re.findall("function_name", msg.content) and re.findall("```json", msg.content):
+                print("******", msg)
                 matches = re.findall(PATTERN_JSON, msg.content, re.DOTALL)
                 cleaned_string = ''
                 for match in matches:
